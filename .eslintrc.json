@@ -15,6 +15,7 @@
         "@typescript-eslint"
     ],
     "rules": {
-        "semi": 0
+        "semi": 0,
+        "comma-dangle": [2, "always-multiline"]
     }
 }
