@@ -2,3 +2,4 @@
 /tests
 /coverage
 /node_modules
+.env
