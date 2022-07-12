@@ -14,7 +14,7 @@ import prisma from '../prisma/prisma';
 export const signup: RequestHandler = async (req, res) => {
   // validate request body
   const { error, value } = validateSignup(req.body as User);
-  if (error) return res.status(422).json({ message: error.details[0].message });
+  if (error) return res.status(422).json({ status: 'error', message: error.details[0].message, code: 422 });
 
   const { name, email, password } = value;
 
