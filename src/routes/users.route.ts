@@ -1,9 +1,9 @@
 import expressRouter from 'express-promise-router';
 
-// import { signIn } from './../controllers/auth.controller';
+import { signup } from './../controllers/users.controller';
 
 const router = expressRouter();
 
-// router.route('/').post(signIn);
+router.route('/').post(signup);
 
 export default router;
