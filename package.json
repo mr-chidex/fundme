@@ -9,7 +9,7 @@
     "build": "tsc -p .",
     "build:watch": "tsc --watch",
     "clean": "rm -rf dist",
-    "test": "jest --detectOpenHandles --coverge",
+    "test": "jest --detectOpenHandles --coverage",
     "test:watch": "jest --watchAll --detectOpenHandles",
     "lint": "eslint src/**/*.ts",
     "lint:format": "eslint src/**/*.ts --fix"
