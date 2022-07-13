@@ -4,7 +4,7 @@ import bcrypt from 'bcrypt';
 import { PayData, User } from '../libs/types';
 import { validatePayData, validateSignup } from '../utils/users.util';
 import prisma from '../prisma/prisma';
-import { initializePayment, verifyPay } from '../config/paystack';
+import { initializePayment } from '../config/paystack';
 
 /**
  *
@@ -50,17 +50,27 @@ export const fundAccount: RequestHandler = async (req, res) => {
   res.json({ status: 'success', message: 'payment initialised successfully', data });
 };
 
-export const verifyPayment: RequestHandler = async (req, res) => {
-  const { ref } = req.body;
-  const txref = req.query.txref;
-  console.log('reff::: >', { ref, txref });
-
-  const data = await verifyPay(ref || txref);
-  res.json({ message: 'verify', data });
-};
-
-export const webHookVerify: RequestHandler = async (req, res) => {
+export const webHookVerifyPayment: RequestHandler = async (req, res) => {
   console.log('WebHook::::>', req.body);
 
   res.sendStatus(200);
 };
+
+/*
+// callback verification function
+export const verifyPayment: RequestHandler = async (req, res) => {
+  const trxref = req.query.trxref as string;
+
+  if (!trxref) {
+    return res.status(400).json({
+      status: 'error',
+      message: 'Invalid verification request. Transaction reference not specified',
+      code: 400,
+    });
+  }
+
+  const data = await verifyPay(trxref);
+  res.json({ message: 'verify status', data });
+};
+
+*/
