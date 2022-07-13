@@ -50,6 +50,17 @@ export const fundAccount: RequestHandler = async (req, res) => {
   res.json({ status: 'success', message: 'payment initialised successfully', data });
 };
 
+export const getUsers: RequestHandler = async (req, res) => {
+  const users = await prisma.user.findMany();
+
+  res.json({ users });
+};
+
+export const addBeneficiary: RequestHandler = async (req, res) => {
+  // const users = await prisma.user.findUnique
+  res.json({ users: 'users' });
+};
+
 export const webHookVerifyPayment: RequestHandler = async (req, res) => {
   console.log('WebHook::::>', req.body);
 

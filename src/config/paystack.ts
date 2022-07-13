@@ -1,10 +1,8 @@
 import fetch from 'node-fetch';
 
-const SECRET = `Bearer ${process.env.PAYSTACK_SECRET}`;
+import { Err } from '../libs/types';
 
-interface Err extends Error {
-  statusCode?: number;
-}
+const SECRET = `Bearer ${process.env.PAYSTACK_SECRET}`;
 
 export const initializePayment = async (data: any) => {
   try {

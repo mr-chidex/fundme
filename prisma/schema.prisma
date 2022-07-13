@@ -7,14 +7,25 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id       Int    @id @default(autoincrement())
-  email    String @unique
-  name     String
-  password String
+model PaymentDetails {
+  id       Int      @id @default(autoincrement())
+  email    String
+  paidBy   String
+  channel  String
+  paidAt   DateTime
+  sender   User?    @relation(fields: [senderId], references: [id])
+  senderId Int?
 }
 
-model Account {
-  id     Int @id @default(autoincrement())
-  amount Int
+model User {
+  id            Int              @id @default(autoincrement())
+  email         String           @unique
+  name          String
+  password      String
+  createdAt     DateTime         @default(now())
+  totalFund     Int?
+  payDetails    PaymentDetails[]
+  beneficiary   User?            @relation("UserBeneficiary", fields: [beneficiaryId], references: [id])
+  beneficiries  User[]           @relation("UserBeneficiary")
+  beneficiaryId Int?             @unique
 }

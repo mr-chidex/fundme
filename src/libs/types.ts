@@ -9,3 +9,13 @@ export interface PayData {
   email: string;
   amount: number;
 }
+
+export interface DecodedToken {
+  id: number;
+  email: String;
+  name: String;
+}
+
+export interface Err extends Error {
+  statusCode?: number;
+}
