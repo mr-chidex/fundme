@@ -1,9 +1,10 @@
 import { RequestHandler } from 'express';
 import bcrypt from 'bcrypt';
 
-import { User } from '../libs/types';
-import { validateSignup } from '../utils/users.util';
+import { PayData, User } from '../libs/types';
+import { validatePayData, validateSignup } from '../utils/users.util';
 import prisma from '../prisma/prisma';
+import { initializePayment, verifyPay } from '../config/paystack';
 
 /**
  *
@@ -36,4 +37,30 @@ export const signup: RequestHandler = async (req, res) => {
   });
 
   res.status(201).json({ status: 'success', message: 'user signed up successfully', data: { user } });
+};
+
+export const fundAccount: RequestHandler = async (req, res) => {
+  // validate request body
+  const { error, value } = validatePayData(req.body as PayData);
+  if (error) return res.status(422).json({ status: 'error', message: error.details[0].message, code: 422 });
+
+  const { email, amount } = value;
+  const data = await initializePayment({ email, amount: amount * 100 });
+
+  res.json({ status: 'success', message: 'payment initialised successfully', data });
+};
+
+export const verifyPayment: RequestHandler = async (req, res) => {
+  const { ref } = req.body;
+  const txref = req.query.txref;
+  console.log('reff::: >', { ref, txref });
+
+  const data = await verifyPay(ref || txref);
+  res.json({ message: 'verify', data });
+};
+
+export const webHookVerify: RequestHandler = async (req, res) => {
+  console.log('WebHook::::>', req.body);
+
+  res.sendStatus(200);
 };

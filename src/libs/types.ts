@@ -4,3 +4,8 @@ export interface User {
   email: string;
   password: string;
 }
+
+export interface PayData {
+  email: string;
+  amount: number;
+}
