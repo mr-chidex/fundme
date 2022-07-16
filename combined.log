@@ -1,0 +1,70 @@
+{
+  level: 'info',
+  message: 'jwt malformed',
+  service: 'user-service',
+  label: 'error occurred',
+  timestamp: '2022-07-13T14:13:28.819Z'
+}
+{
+  level: 'error',
+  message: 'jwt malformed',
+  service: 'user-service',
+  label: 'error occurred',
+  timestamp: '2022-07-13T14:13:28.823Z'
+}
+{
+  level: 'info',
+  message: 'Cannot set headers after they are sent to the client',
+  service: 'user-service',
+  label: 'error occurred',
+  timestamp: '2022-07-15T14:31:19.957Z'
+}
+{
+  level: 'error',
+  message: 'Cannot set headers after they are sent to the client',
+  service: 'user-service',
+  label: 'error occurred',
+  timestamp: '2022-07-15T14:31:19.962Z'
+}
+{
+  level: 'info',
+  message: 'Cannot set headers after they are sent to the client',
+  service: 'user-service',
+  label: 'error occurred',
+  timestamp: '2022-07-15T14:31:53.383Z'
+}
+{
+  level: 'error',
+  message: 'Cannot set headers after they are sent to the client',
+  service: 'user-service',
+  label: 'error occurred',
+  timestamp: '2022-07-15T14:31:53.388Z'
+}
+{
+  level: 'info',
+  message: 'Cannot set headers after they are sent to the client',
+  service: 'user-service',
+  label: 'error occurred',
+  timestamp: '2022-07-15T14:32:23.865Z'
+}
+{
+  level: 'error',
+  message: 'Cannot set headers after they are sent to the client',
+  service: 'user-service',
+  label: 'error occurred',
+  timestamp: '2022-07-15T14:32:23.867Z'
+}
+{
+  level: 'info',
+  message: 'Cannot set headers after they are sent to the client',
+  service: 'user-service',
+  label: 'error occurred',
+  timestamp: '2022-07-15T14:36:18.632Z'
+}
+{
+  level: 'error',
+  message: 'Cannot set headers after they are sent to the client',
+  service: 'user-service',
+  label: 'error occurred',
+  timestamp: '2022-07-15T14:36:18.633Z'
+}

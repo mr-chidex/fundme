@@ -13,7 +13,7 @@ export const logger = createLogger({
   ],
 });
 
-export default (err: Err, _req: Request, res: Response, _next: NextFunction) => {
+export const error = (err: Err, _req: Request, res: Response, _next: NextFunction) => {
   logger.log({
     level: 'info',
     message: err.message,

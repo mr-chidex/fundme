@@ -19,3 +19,8 @@ export interface DecodedToken {
 export interface Err extends Error {
   statusCode?: number;
 }
+
+export type Beneficiary = {
+  email: string;
+  name: string;
+};

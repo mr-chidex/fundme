@@ -6,6 +6,7 @@ import dotenv from 'dotenv';
 
 import authRoutes from './routes/auth.route';
 import usersRoutes from './routes/users.route';
+import { error } from './controllers/error.controller';
 
 const app: Application = express();
 dotenv.config();
@@ -18,5 +19,6 @@ app.use(helmet());
 
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/users', usersRoutes);
+app.use(error);
 
 export default app;

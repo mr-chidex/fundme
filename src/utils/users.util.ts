@@ -1,6 +1,6 @@
 import joi from 'joi';
 
-import { PayData, User } from '../libs/types';
+import { Beneficiary, PayData, User } from '../libs/types';
 
 export const validateSignup = (user: User) => {
   return joi
@@ -19,4 +19,13 @@ export const validatePayData = (user: PayData) => {
       amount: joi.number().required(),
     })
     .validate(user);
+};
+
+export const validateBeneficiary = (beneficiary: Beneficiary) => {
+  return joi
+    .object({
+      name: joi.string().min(3).trim().required(),
+      email: joi.string().trim().required().email().normalize(),
+    })
+    .validate(beneficiary);
 };
