@@ -26,7 +26,7 @@ export const signup: RequestHandler = async (req, res) => {
       email,
     },
   });
-  if (userExist) return res.status(400).json({ status: 'error', message: 'email already in use', code: 400 });
+  if (userExist) return res.status(400).json({ status: 'error', message: 'Email already in use', code: 400 });
 
   // if user email is new
   const salt = await bcrypt.genSalt(12);
@@ -37,12 +37,12 @@ export const signup: RequestHandler = async (req, res) => {
     select: { email: true, name: true },
   });
 
-  res.status(201).json({ status: 'success', message: 'user signed up successfully', data: { user } });
+  res.status(201).json({ status: 'success', message: 'User signed up successfully', data: { user } });
 };
 
 /**
  *
- * @route GET /api/v1/users/:id
+ * @route GET /api/v1/users/profile
  * @desc - see user profile
  * @acces Private
  */
@@ -66,6 +66,12 @@ export const getProfile: RequestHandler = async (req: IRequest, res) => {
   res.json({ status: 'success', data: { user } });
 };
 
+/**
+ *
+ * @route GET /api/v1/users/beneficiary
+ * @desc - see user profile
+ * @acces Private
+ */
 export const addBeneficiary: RequestHandler = async (req: IRequest, res, next) => {
   const userId = req?.user?.id;
 
@@ -74,7 +80,21 @@ export const addBeneficiary: RequestHandler = async (req: IRequest, res, next) =
   if (error) return res.status(422).json({ status: 'error', message: error.details[0].message, code: 422 });
 
   const { email, name } = value;
+
+  // check if intended beneficiary is a member the application
+  const isUser = await prisma.user.findUnique({
+    where: {
+      email,
+    },
+  });
+
+  // if beneficiary user not found
+  if (!isUser) {
+    return res.status(400).json({ status: 'error', message: 'Intended beneficiary is not registered user', code: 400 });
+  }
+
   try {
+    // add to beneficiary list
     const user = await prisma.user.update({
       where: { id: userId },
       data: {
@@ -104,6 +124,7 @@ export const addBeneficiary: RequestHandler = async (req: IRequest, res, next) =
 
 export const fundMyAccount: RequestHandler = async (req: IRequest, res) => {
   const userId = req?.user?.id;
+
   // validate request body
   const { error, value } = validateFundMe(req.body);
   if (error) return res.status(422).json({ status: 'error', message: error.details[0].message, code: 422 });
@@ -114,17 +135,58 @@ export const fundMyAccount: RequestHandler = async (req: IRequest, res) => {
     where: { id: userId },
   });
 
-  if (!user) return res.status(403).json({ status: 'error', message: "Can't fund this account", code: 403 });
+  if (!user) return res.status(400).json({ status: 'error', message: 'Not a valid account', code: 400 });
 
   const data = await initializePayment({ email: user.email, amount: amount * 100 });
 
-  res.json({ status: 'success', message: 'payment initialised successfully', data });
+  res.json({ status: 'success', message: 'Payment initialised successfully', data });
 };
 
 export const webHookVerifyPayment: RequestHandler = async (req, res) => {
-  console.log('WebHook::::>', req.body);
-
   res.sendStatus(200);
+
+  const { data } = req.body;
+
+  const email = data?.customer?.email;
+  if (data?.status === 'success') {
+    // get user
+    const user = await prisma.user.findUnique({
+      where: {
+        email,
+      },
+      include: {
+        account: {
+          select: {
+            totalFund: true,
+          },
+        },
+      },
+    });
+
+    // if user is valid
+    if (user) {
+      // update total funds and account history
+      await prisma.user.update({
+        where: {
+          email,
+        },
+        data: {
+          account: {
+            create: {
+              totalFund: (user.account?.totalFund || 0) + Math.floor(data?.amount / 100),
+              history: {
+                create: {
+                  name: user.name,
+                  sentBy: user.email,
+                },
+              },
+            },
+          },
+        },
+      });
+    }
+  }
+  console.log('WebHook::::>', req.body);
 };
 
 export const getUsers: RequestHandler = async (req, res) => {

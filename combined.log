@@ -354,3 +354,17 @@
   label: 'error occurred',
   timestamp: '2022-07-16T04:32:40.209Z'
 }
+{
+  level: 'info',
+  message: 'invalid token',
+  service: 'user-service',
+  label: 'error occurred',
+  timestamp: '2022-07-16T04:37:28.468Z'
+}
+{
+  level: 'error',
+  message: 'invalid token',
+  service: 'user-service',
+  label: 'error occurred',
+  timestamp: '2022-07-16T04:37:28.470Z'
+}

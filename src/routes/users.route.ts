@@ -17,6 +17,6 @@ router.route('/fund-account').post(authUser, fundMyAccount);
 // router.route('/verify-pay').get(verifyPayment);
 router.route('/web-hook').post(webHookVerifyPayment);
 router.route('/beneficiary').post(authUser, addBeneficiary);
-router.route('/:id').get(authUser, getProfile);
+router.route('/profile').get(authUser, getProfile);
 
 export default router;
