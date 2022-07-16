@@ -5,6 +5,7 @@ import { Beneficiary, PayData, User } from '../libs/types';
 import { validateBeneficiary, validatePayData, validateSignup } from '../utils/users.util';
 import prisma from '../prisma/prisma';
 import { initializePayment } from '../config/paystack';
+import { Prisma } from '@prisma/client';
 
 /**
  *
@@ -65,6 +66,42 @@ export const getProfile: RequestHandler = async (req: Request | any, res) => {
   res.json({ status: 'success', data: { user } });
 };
 
+export const addBeneficiary: RequestHandler = async (req: Request | any, res, next) => {
+  const userId = req?.user?.id;
+
+  // validate request body
+  const { error, value } = validateBeneficiary(req.body as Beneficiary);
+  if (error) return res.status(422).json({ status: 'error', message: error.details[0].message, code: 422 });
+
+  const { email, name } = value;
+  try {
+    const user = await prisma.user.update({
+      where: { id: userId },
+      data: {
+        beneficiaries: {
+          create: {
+            name,
+            email,
+          },
+        },
+      },
+      include: { beneficiaries: true },
+    });
+
+    res.json({ status: 'success', message: 'beneficiary successfully added', data: { user } });
+  } catch (error: any) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      if (error?.code === 'P2002') {
+        error.message = 'user already added as a beneficiary';
+        error.code = '400';
+        return next(error);
+      }
+    }
+
+    next(error);
+  }
+};
+
 export const fundAccount: RequestHandler = async (req, res) => {
   // validate request body
   const { error, value } = validatePayData(req.body as PayData);
@@ -80,30 +117,6 @@ export const getUsers: RequestHandler = async (req, res) => {
   const users = await prisma.user.findMany();
 
   res.json({ users });
-};
-
-export const addBeneficiary: RequestHandler = async (req: Request | any, res) => {
-  const userId = req?.user?.id;
-  // validate request body
-  const { error, value } = validateBeneficiary(req.body as Beneficiary);
-  if (error) return res.status(422).json({ status: 'error', message: error.details[0].message, code: 422 });
-
-  const { email, name } = value;
-  console.log({ email, name });
-  const user = await prisma.user.findUnique({
-    where: { id: userId },
-    select: { beneficiaries: true },
-  });
-
-  // console.log(user?.beneficiaries);
-
-  // if (!user) {
-  //   return res.status(404).json({ status: 'error', message: 'User not found', code: 404 });
-  // }
-
-  // if (!user) return res.status(400).json({ status: 'error', message: 'user not found', code: 400 });
-
-  res.json({ user });
 };
 
 export const webHookVerifyPayment: RequestHandler = async (req, res) => {

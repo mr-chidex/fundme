@@ -47,3 +47,118 @@
   label: 'error occurred',
   timestamp: '2022-07-16T03:23:13.958Z'
 }
+{
+  level: 'error',
+  message: '\n' +
+    'Invalid `prisma.user.update()` invocation in\n' +
+    'C:\\Users\\DELL\\Documents\\v\\proj\\node_test\\src\\controllers\\users.controller.ts:77:34\n' +
+    '\n' +
+    '   74 \n' +
+    '   75 const { email, name } = value;\n' +
+    '   76 \n' +
+    '→  77 const user = await prisma.user.update(\n' +
+    '  Unique constraint failed on the constraint: `Beneficiary_email_key`',
+  service: 'user-service',
+  label: 'error occurred',
+  timestamp: '2022-07-16T03:46:53.774Z'
+}
+{
+  level: 'error',
+  message: '\n' +
+    'Invalid `prisma.user.update()` invocation in\n' +
+    'C:\\Users\\DELL\\Documents\\v\\proj\\node_test\\src\\controllers\\users.controller.ts:77:36\n' +
+    '\n' +
+    '   74 \n' +
+    '   75 const { email, name } = value;\n' +
+    '   76 try {\n' +
+    '→  77   const user = await prisma.user.update(\n' +
+    '  Unique constraint failed on the constraint: `Beneficiary_email_key`',
+  service: 'user-service',
+  label: 'error occurred',
+  timestamp: '2022-07-16T03:51:47.742Z'
+}
+{
+  level: 'error',
+  message: 'There is a unique constraint violation, a new user cannot be created with this email',
+  service: 'user-service',
+  label: 'error occurred',
+  timestamp: '2022-07-16T03:53:44.011Z'
+}
+{
+  level: 'error',
+  message: 'user already added as a beneficiary',
+  service: 'user-service',
+  label: 'error occurred',
+  timestamp: '2022-07-16T03:58:00.697Z'
+}
+{
+  level: 'error',
+  message: 'user already added as a beneficiary',
+  service: 'user-service',
+  label: 'error occurred',
+  timestamp: '2022-07-16T03:58:51.452Z'
+}
+{
+  level: 'error',
+  message: 'user already added as a beneficiary',
+  service: 'user-service',
+  label: 'error occurred',
+  timestamp: '2022-07-16T04:00:18.494Z'
+}
+{
+  level: 'error',
+  message: 'user already added as a beneficiary',
+  service: 'user-service',
+  label: 'error occurred',
+  timestamp: '2022-07-16T04:00:45.768Z'
+}
+{
+  level: 'error',
+  message: 'user already added as a beneficiary',
+  service: 'user-service',
+  label: 'error occurred',
+  timestamp: '2022-07-16T04:00:47.881Z'
+}
+{
+  level: 'error',
+  message: '\n' +
+    'Invalid `prisma.user.update()` invocation in\n' +
+    'C:\\Users\\DELL\\Documents\\v\\proj\\node_test\\src\\controllers\\users.controller.ts:78:36\n' +
+    '\n' +
+    '   75 \n' +
+    '   76 const { email, name } = value;\n' +
+    '   77 try {\n' +
+    '→  78   const user = await prisma.user.update(\n' +
+    '  Unique constraint failed on the constraint: `Beneficiary_email_key`',
+  service: 'user-service',
+  label: 'error occurred',
+  timestamp: '2022-07-16T04:01:16.341Z'
+}
+{
+  level: 'error',
+  message: 'user already added as a beneficiary',
+  service: 'user-service',
+  label: 'error occurred',
+  timestamp: '2022-07-16T04:02:10.967Z'
+}
+{
+  level: 'error',
+  message: 'user already added as a beneficiary',
+  service: 'user-service',
+  label: 'error occurred',
+  timestamp: '2022-07-16T04:02:36.850Z'
+}
+{
+  level: 'error',
+  message: 'user already added as a beneficiary',
+  service: 'user-service',
+  label: 'error occurred',
+  timestamp: '2022-07-16T04:03:23.970Z'
+}
+{
+  level: 'error',
+  message: 'user already added as a beneficiary',
+  service: 'user-service',
+  label: 'error occurred',
+  timestamp: '2022-07-16T04:03:40.468Z'
+}

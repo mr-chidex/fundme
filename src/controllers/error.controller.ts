@@ -23,7 +23,7 @@ export const error = (err: Err, _req: Request, res: Response, _next: NextFunctio
     message: err.message,
   });
 
-  const code = err.statusCode || 500;
+  const code = err.statusCode || Number(err?.code) || 500;
 
   if (process.env.NODE_ENV !== 'production') {
     logger.add(
