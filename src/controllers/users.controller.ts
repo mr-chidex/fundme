@@ -1,11 +1,11 @@
-import { Request, RequestHandler } from 'express';
+import { RequestHandler } from 'express';
 import bcrypt from 'bcrypt';
+import { Prisma } from '@prisma/client';
 
-import { Beneficiary, PayData, User } from '../libs/types';
-import { validateBeneficiary, validatePayData, validateSignup } from '../utils/users.util';
+import { Beneficiary, IRequest, User } from '../libs/types';
+import { validateBeneficiary, validateFundMe, validateSignup } from '../utils/users.util';
 import prisma from '../prisma/prisma';
 import { initializePayment } from '../config/paystack';
-import { Prisma } from '@prisma/client';
 
 /**
  *
@@ -15,10 +15,10 @@ import { Prisma } from '@prisma/client';
  */
 export const signup: RequestHandler = async (req, res) => {
   // validate request body
-  const { error, value } = validateSignup(req.body as User);
+  const { error, value } = validateSignup(req.body);
   if (error) return res.status(422).json({ status: 'error', message: error.details[0].message, code: 422 });
 
-  const { name, email, password } = value;
+  const { name, email, password } = value as User;
 
   // check if email is already in use
   const userExist = await prisma.user.findUnique({
@@ -46,7 +46,7 @@ export const signup: RequestHandler = async (req, res) => {
  * @desc - see user profile
  * @acces Private
  */
-export const getProfile: RequestHandler = async (req: Request | any, res) => {
+export const getProfile: RequestHandler = async (req: IRequest, res) => {
   const userId = req?.user?.id;
 
   const user = await prisma.user.findUnique({
@@ -66,7 +66,7 @@ export const getProfile: RequestHandler = async (req: Request | any, res) => {
   res.json({ status: 'success', data: { user } });
 };
 
-export const addBeneficiary: RequestHandler = async (req: Request | any, res, next) => {
+export const addBeneficiary: RequestHandler = async (req: IRequest, res, next) => {
   const userId = req?.user?.id;
 
   // validate request body
@@ -102,27 +102,35 @@ export const addBeneficiary: RequestHandler = async (req: Request | any, res, ne
   }
 };
 
-export const fundAccount: RequestHandler = async (req, res) => {
+export const fundMyAccount: RequestHandler = async (req: IRequest, res) => {
+  const userId = req?.user?.id;
   // validate request body
-  const { error, value } = validatePayData(req.body as PayData);
+  const { error, value } = validateFundMe(req.body);
   if (error) return res.status(422).json({ status: 'error', message: error.details[0].message, code: 422 });
 
-  const { email, amount } = value;
-  const data = await initializePayment({ email, amount: amount * 100 });
+  const { amount } = value as { amount: number };
+
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+  });
+
+  if (!user) return res.status(403).json({ status: 'error', message: "Can't fund this account", code: 403 });
+
+  const data = await initializePayment({ email: user.email, amount: amount * 100 });
 
   res.json({ status: 'success', message: 'payment initialised successfully', data });
-};
-
-export const getUsers: RequestHandler = async (req, res) => {
-  const users = await prisma.user.findMany();
-
-  res.json({ users });
 };
 
 export const webHookVerifyPayment: RequestHandler = async (req, res) => {
   console.log('WebHook::::>', req.body);
 
   res.sendStatus(200);
+};
+
+export const getUsers: RequestHandler = async (req, res) => {
+  const users = await prisma.user.findMany();
+
+  res.json({ users });
 };
 
 /*

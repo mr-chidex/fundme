@@ -3,7 +3,7 @@ import { authUser } from '../middlewares/auth';
 
 import {
   addBeneficiary,
-  fundAccount,
+  fundMyAccount,
   getProfile,
   getUsers,
   signup,
@@ -13,7 +13,7 @@ import {
 const router = expressRouter();
 
 router.route('/').post(signup).get(getUsers);
-router.route('/fund-account').post(fundAccount);
+router.route('/fund-account').post(authUser, fundMyAccount);
 // router.route('/verify-pay').get(verifyPayment);
 router.route('/web-hook').post(webHookVerifyPayment);
 router.route('/beneficiary').post(authUser, addBeneficiary);

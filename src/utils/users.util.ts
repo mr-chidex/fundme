@@ -12,13 +12,21 @@ export const validateSignup = (user: User) => {
     .validate(user);
 };
 
-export const validatePayData = (user: PayData) => {
+export const validateFundMe = (data: { amount: number }) => {
+  return joi
+    .object({
+      amount: joi.number().required(),
+    })
+    .validate(data);
+};
+
+export const validatePayData = (data: PayData) => {
   return joi
     .object({
       email: joi.string().trim().required().email().normalize(),
       amount: joi.number().required(),
     })
-    .validate(user);
+    .validate(data);
 };
 
 export const validateBeneficiary = (beneficiary: Beneficiary) => {

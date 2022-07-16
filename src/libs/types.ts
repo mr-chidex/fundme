@@ -1,6 +1,7 @@
+import { Request } from 'express';
 export interface User {
   id?: number;
-  name?: string;
+  name: string;
   email: string;
   password: string;
 }
@@ -25,3 +26,7 @@ export type Beneficiary = {
   email: string;
   name: string;
 };
+
+export interface IRequest extends Request {
+  user?: { id: number };
+}

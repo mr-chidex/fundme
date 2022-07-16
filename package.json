@@ -13,8 +13,7 @@
     "test:watch": "jest --watchAll --detectOpenHandles",
     "lint": "eslint src/**/*.ts",
     "lint:format": "eslint src/**/*.ts --fix",
-    "prisma:migrate": "prisma migrate dev",
-    "serve": "yarn ngrok http"
+    "serve": "yarn ngrok http 8080"
   },
   "keywords": [],
   "author": "",
