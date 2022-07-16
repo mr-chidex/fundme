@@ -26,11 +26,11 @@ model Beneficiary {
 }
 
 model Account {
-  accountId Int              @id @default(autoincrement())
-  totalFund Int?             @default(0)
-  user      User             @relation(fields: [userId], references: [id])
-  userId    Int              @unique
-  history   AccountHistory[]
+  accountId  Int              @id @default(autoincrement())
+  totalFunds Int?             @default(0)
+  user       User             @relation(fields: [userId], references: [id])
+  userId     Int              @unique
+  history    AccountHistory[]
 }
 
 model AccountHistory {

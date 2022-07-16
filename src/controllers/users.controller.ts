@@ -2,8 +2,8 @@ import { RequestHandler } from 'express';
 import bcrypt from 'bcrypt';
 import { Prisma } from '@prisma/client';
 
-import { Beneficiary, IRequest, User } from '../libs/types';
-import { validateBeneficiary, validateFundMe, validateSignup } from '../utils/users.util';
+import { Beneficiary, IRequest, PayData, User } from '../libs/types';
+import { validateBeneficiary, validatePayData, validateSignup } from '../utils/users.util';
 import prisma from '../prisma/prisma';
 import { initializePayment } from '../config/paystack';
 
@@ -124,12 +124,16 @@ export const addBeneficiary: RequestHandler = async (req: IRequest, res, next) =
 
 export const fundMyAccount: RequestHandler = async (req: IRequest, res) => {
   const userId = req?.user?.id;
+  // const userEmail = req?.user?.email;
 
   // validate request body
-  const { error, value } = validateFundMe(req.body);
+  const { error, value } = validatePayData(req.body);
   if (error) return res.status(422).json({ status: 'error', message: error.details[0].message, code: 422 });
 
-  const { amount } = value as { amount: number };
+  const { amount } = value as PayData;
+
+  // if email was passed
+  // ------
 
   const user = await prisma.user.findUnique({
     where: { id: userId },
@@ -142,6 +146,7 @@ export const fundMyAccount: RequestHandler = async (req: IRequest, res) => {
   res.json({ status: 'success', message: 'Payment initialised successfully', data });
 };
 
+// Verify payment by paystack webhook
 export const webHookVerifyPayment: RequestHandler = async (req, res) => {
   res.sendStatus(200);
 
@@ -186,7 +191,7 @@ export const webHookVerifyPayment: RequestHandler = async (req, res) => {
       });
     }
   }
-  console.log('WebHook::::>', req.body);
+  console.log('WebHook verification done::::>');
 };
 
 export const getUsers: RequestHandler = async (req, res) => {

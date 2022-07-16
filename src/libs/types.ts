@@ -28,5 +28,5 @@ export type Beneficiary = {
 };
 
 export interface IRequest extends Request {
-  user?: { id: number };
+  user?: { id: number; email: string };
 }

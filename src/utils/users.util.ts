@@ -23,7 +23,7 @@ export const validateFundMe = (data: { amount: number }) => {
 export const validatePayData = (data: PayData) => {
   return joi
     .object({
-      email: joi.string().trim().required().email().normalize(),
+      email: joi.optional(),
       amount: joi.number().required(),
     })
     .validate(data);
