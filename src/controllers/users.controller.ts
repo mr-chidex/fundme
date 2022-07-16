@@ -39,6 +39,32 @@ export const signup: RequestHandler = async (req, res) => {
   res.status(201).json({ status: 'success', message: 'user signed up successfully', data: { user } });
 };
 
+/**
+ *
+ * @route GET /api/v1/users/:id
+ * @desc - see user profile
+ * @acces Private
+ */
+export const getProfile: RequestHandler = async (req: Request | any, res) => {
+  const userId = req?.user?.id;
+
+  const user = await prisma.user.findUnique({
+    where: {
+      id: userId,
+    },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      createdAt: true,
+      account: true,
+      beneficiaries: true,
+    },
+  });
+
+  res.json({ status: 'success', data: { user } });
+};
+
 export const fundAccount: RequestHandler = async (req, res) => {
   // validate request body
   const { error, value } = validatePayData(req.body as PayData);
