@@ -33,7 +33,7 @@ export const validateBeneficiary = (beneficiary: Beneficiary) => {
   return joi
     .object({
       name: joi.string().min(3).trim().required(),
-      email: joi.string().trim().required().email().normalize(),
+      email: joi.optional(),
     })
     .validate(beneficiary);
 };

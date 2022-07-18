@@ -6,9 +6,9 @@ import { Beneficiary, IRequest, PayData, User } from '../libs/types';
 import { validateBeneficiary, validatePayData, validateSignup } from '../utils/users.util';
 import prisma from '../prisma/prisma';
 import { initializePayment } from '../config/paystack';
+import { logger } from './error.controller';
 
 /**
- *
  * @route POST /api/v1/users
  * @desc - signup a new user
  * @acces Public
@@ -41,7 +41,6 @@ export const signup: RequestHandler = async (req, res) => {
 };
 
 /**
- *
  * @route GET /api/v1/users/profile
  * @desc - see user profile
  * @acces Private
@@ -67,8 +66,7 @@ export const getProfile: RequestHandler = async (req: IRequest, res) => {
 };
 
 /**
- *
- * @route GET /api/v1/users/beneficiary
+ * @route PATCH /api/v1/users/beneficiary
  * @desc - add a user as beneficiary
  * @acces Private
  */
@@ -128,6 +126,11 @@ export const addBeneficiary: RequestHandler = async (req: IRequest, res, next) =
   }
 };
 
+/**
+ * @route GET /api/v1/users/transfer
+ * @desc - transfer money
+ * @acces Private
+ */
 export const sendMoney: RequestHandler = async (req: IRequest, res) => {
   const userId = req?.user?.id;
   const userEmail = req?.user?.email;
@@ -172,7 +175,8 @@ export const sendMoney: RequestHandler = async (req: IRequest, res) => {
   }
 };
 
-// Verify payment by paystack webhook
+// Verify payment with paystack webhook
+// route should not be publicly available
 export const webHookVerifyPayment: RequestHandler = async (req, res) => {
   res.sendStatus(200);
 
@@ -217,9 +221,11 @@ export const webHookVerifyPayment: RequestHandler = async (req, res) => {
       });
     }
   }
-  console.log('WebHook verification done::::>');
+
+  logger.log('info', 'WebHook verification');
 };
 
+// for testing purpose
 export const getUsers: RequestHandler = async (req, res) => {
   const users = await prisma.user.findMany();
 
