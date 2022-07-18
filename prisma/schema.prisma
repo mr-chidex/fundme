@@ -37,6 +37,7 @@ model AccountHistory {
   historyId Int      @id @default(autoincrement())
   name      String?
   sentBy    String?
+  reference String?
   account   Account  @relation(fields: [accountId], references: [accountId])
   accountId Int
   createdAt DateTime @default(now())

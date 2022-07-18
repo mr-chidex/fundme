@@ -69,11 +69,12 @@ export const getProfile: RequestHandler = async (req: IRequest, res) => {
 /**
  *
  * @route GET /api/v1/users/beneficiary
- * @desc - see user profile
+ * @desc - add a user as beneficiary
  * @acces Private
  */
 export const addBeneficiary: RequestHandler = async (req: IRequest, res, next) => {
   const userId = req?.user?.id;
+  const userEmail = req?.user?.email;
 
   // validate request body
   const { error, value } = validateBeneficiary(req.body as Beneficiary);
@@ -81,7 +82,12 @@ export const addBeneficiary: RequestHandler = async (req: IRequest, res, next) =
 
   const { email, name } = value;
 
-  // check if intended beneficiary is a member the application
+  // check if intended beneficiary is not current user
+  if (userEmail === email) {
+    return res.status(400).json({ status: 'error', message: 'Cannot add yourself as a beneficiary', code: 400 });
+  }
+
+  // check if intended beneficiary is a user
   const isUser = await prisma.user.findUnique({
     where: {
       email,
@@ -122,28 +128,48 @@ export const addBeneficiary: RequestHandler = async (req: IRequest, res, next) =
   }
 };
 
-export const fundMyAccount: RequestHandler = async (req: IRequest, res) => {
+export const sendMoney: RequestHandler = async (req: IRequest, res) => {
   const userId = req?.user?.id;
-  // const userEmail = req?.user?.email;
+  const userEmail = req?.user?.email;
 
   // validate request body
   const { error, value } = validatePayData(req.body);
   if (error) return res.status(422).json({ status: 'error', message: error.details[0].message, code: 422 });
 
-  const { amount } = value as PayData;
-
-  // if email was passed
-  // ------
+  const { email, amount } = value as PayData;
 
   const user = await prisma.user.findUnique({
     where: { id: userId },
+    include: {
+      beneficiaries: {
+        select: {
+          email: true,
+        },
+      },
+    },
   });
 
   if (!user) return res.status(400).json({ status: 'error', message: 'Not a valid account', code: 400 });
 
-  const data = await initializePayment({ email: user.email, amount: amount * 100 });
+  const userBeneficiaries = user?.beneficiaries;
 
-  res.json({ status: 'success', message: 'Payment initialised successfully', data });
+  // if email was passed == user wants to fund another user
+  if (email && email !== userEmail) {
+    const isBeneficiary = userBeneficiaries?.some((beneficiary) => beneficiary.email === email);
+
+    // if user not a beneficiary
+    if (!isBeneficiary) {
+      return res.status(400).json({ status: 'error', message: 'Can only fund your beneficiaries', code: 400 });
+    }
+    const data = await initializePayment({ email, amount: amount * 100 });
+
+    res.json({ status: 'success', message: 'Payment initialised successfully', data });
+  } else {
+    // when email is not passed == user is funding his/her account
+    const data = await initializePayment({ email: user.email, amount: amount * 100 });
+
+    res.json({ status: 'success', message: 'Payment initialised successfully', data });
+  }
 };
 
 // Verify payment by paystack webhook
@@ -162,7 +188,7 @@ export const webHookVerifyPayment: RequestHandler = async (req, res) => {
       include: {
         account: {
           select: {
-            totalFund: true,
+            totalFunds: true,
           },
         },
       },
@@ -178,11 +204,11 @@ export const webHookVerifyPayment: RequestHandler = async (req, res) => {
         data: {
           account: {
             create: {
-              totalFund: (user.account?.totalFund || 0) + Math.floor(data?.amount / 100),
+              totalFunds: (user.account?.totalFunds || 0) + Math.floor(data?.amount / 100),
               history: {
                 create: {
-                  name: user.name,
-                  sentBy: user.email,
+                  sentBy: email,
+                  reference: data?.reference,
                 },
               },
             },
