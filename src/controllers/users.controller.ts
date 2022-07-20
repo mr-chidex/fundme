@@ -57,6 +57,7 @@ export const getProfile: RequestHandler = async (req: IRequest, res) => {
       name: true,
       email: true,
       createdAt: true,
+      totalFunds: true,
       beneficiaries: true,
     },
   });
@@ -108,7 +109,7 @@ export const addBeneficiary: RequestHandler = async (req: IRequest, res, next) =
           },
         },
       },
-      include: { beneficiaries: true },
+      select: { beneficiaries: true, email: true, name: true },
     });
 
     res.json({ status: 'success', message: 'beneficiary successfully added', data: { user } });

@@ -1,4 +1,4 @@
-## Node Engineer Test
+## FundMe
 
 A basic fintech API with the following User stories
 
@@ -14,9 +14,51 @@ A basic fintech API with the following User stories
 ### Tools
 
 - MYSQL
-- Prisma
+- Prisma ORM
 - Postman
 - Typescript
 - Paystack
 - Jest
-- Ngrok
+- Ngrok (for testing paystack webhook)
+- Express
+- Git
+- Json Web Token
+
+### Documentation
+
+Postman: [See documentation](https://documenter.getpostman.com/view/11724511/UzR1JMuy)
+
+### Clone this project
+
+```
+git clone https://github.com/mr-chidex/fundme.git
+```
+
+```
+cd fundme
+```
+
+### Configure app
+
+- Create a file named `.env` in the project root directory
+- Add the environment variables as described in `dev.env` file
+
+### Install dependencies
+
+```
+yarn install
+```
+
+### Running this project locally
+
+```
+yarn dev
+```
+
+## Show your support
+
+Give a ⭐️ if you like this project!
+
+## Copyright
+
+Copyright (c) mr-chidex
