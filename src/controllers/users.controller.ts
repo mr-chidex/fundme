@@ -57,7 +57,6 @@ export const getProfile: RequestHandler = async (req: IRequest, res) => {
       name: true,
       email: true,
       createdAt: true,
-      account: true,
       beneficiaries: true,
     },
   });
@@ -164,6 +163,7 @@ export const sendMoney: RequestHandler = async (req: IRequest, res) => {
     if (!isBeneficiary) {
       return res.status(400).json({ status: 'error', message: 'Can only make transfers to beneficiaries', code: 400 });
     }
+
     const data = await initializePayment({ email, amount: amount * 100 });
 
     res.json({ status: 'success', message: 'Payment initialised successfully', data });
@@ -183,50 +183,43 @@ export const webHookVerifyPayment: RequestHandler = async (req, res) => {
   const { data } = req.body;
 
   const email = data?.customer?.email;
+
   if (data?.status === 'success') {
     const user = await prisma.user.findUnique({
       where: {
         email,
       },
-      include: {
-        account: {
-          select: {
-            totalFunds: true,
-          },
-        },
+      select: {
+        totalFunds: true,
       },
     });
 
-    // if user is valid
     if (user) {
-      // update total funds and account history
       await prisma.user.update({
         where: {
           email,
         },
         data: {
-          account: {
-            create: {
-              totalFunds: (user.account?.totalFunds || 0) + Math.floor(data?.amount / 100),
-              history: {
-                create: {
-                  sentBy: email,
-                  reference: data?.reference,
-                },
-              },
-            },
-          },
+          totalFunds: (user?.totalFunds || 0) + Math.floor(data?.amount / 100),
         },
       });
     }
   }
 
+  console.log('done:::>>>');
   logger.log('info', 'WebHook verification');
 };
 
 // for testing purpose
 export const getUsers: RequestHandler = async (req, res) => {
-  const users = await prisma.user.findMany();
+  const users = await prisma.user.findMany({
+    select: {
+      name: true,
+      email: true,
+      totalFunds: true,
+      beneficiaries: true,
+    },
+  });
 
   res.json({ users });
 };

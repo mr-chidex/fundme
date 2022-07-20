@@ -18,7 +18,5 @@
 		"skipLibCheck": true,
 		"forceConsistentCasingInFileNames": true,
 	},
-	"files": ["src/types/types.d.ts"],
 	"exclude": ["node_modules", "tests"], 
-	"include": ["src"]
 }

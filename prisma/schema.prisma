@@ -14,7 +14,7 @@ model User {
   password      String
   createdAt     DateTime      @default(now())
   beneficiaries Beneficiary[]
-  account       Account?
+  totalFunds    Int?          @default(0)
 }
 
 model Beneficiary {
@@ -23,22 +23,4 @@ model Beneficiary {
   email         String  @unique
   user          User    @relation(fields: [userId], references: [id])
   userId        Int
-}
-
-model Account {
-  accountId  Int              @id @default(autoincrement())
-  totalFunds Int?             @default(0)
-  user       User             @relation(fields: [userId], references: [id])
-  userId     Int              @unique
-  history    AccountHistory[]
-}
-
-model AccountHistory {
-  historyId Int      @id @default(autoincrement())
-  name      String?
-  sentBy    String?
-  reference String?
-  account   Account  @relation(fields: [accountId], references: [accountId])
-  accountId Int
-  createdAt DateTime @default(now())
 }

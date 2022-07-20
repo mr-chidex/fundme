@@ -3,4 +3,5 @@
 /coverage
 /node_modules
 .env
-*.log
+error.log
+combined.log

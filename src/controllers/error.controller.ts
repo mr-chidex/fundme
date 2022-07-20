@@ -5,7 +5,7 @@ const { combine, timestamp, label, prettyPrint } = format;
 
 export const logger = createLogger({
   level: 'info',
-  format: combine(label({ label: 'error occurred' }), timestamp(), prettyPrint()),
+  format: combine(label({ label: 'something happened' }), timestamp(), prettyPrint()),
   defaultMeta: { service: 'user-service' },
   transports: [
     new transports.File({ filename: 'error.log', level: 'error' }),
