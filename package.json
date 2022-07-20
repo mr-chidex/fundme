@@ -4,8 +4,8 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "start": "node ./dist/index.js",
-    "dev": "nodemon ./src/index.ts",
+    "start": "yarn build && node ./dist/index.js",
+    "dev": "yarn clean && nodemon ./src/index.ts",
     "build": "tsc -p .",
     "build:watch": "tsc --watch",
     "clean": "rm -rf dist",

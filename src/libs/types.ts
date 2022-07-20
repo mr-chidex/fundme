@@ -7,7 +7,7 @@ export interface User {
 }
 
 export interface PayData {
-  email: string;
+  email?: string;
   amount: number;
 }
 

@@ -80,7 +80,7 @@ export const addBeneficiary: RequestHandler = async (req: IRequest, res, next) =
 
   const { email, name } = value;
 
-  // check if intended beneficiary is not current user
+  // check if intended beneficiary is current user
   if (userEmail === email) {
     return res.status(400).json({ status: 'error', message: 'Cannot add yourself as a beneficiary', code: 400 });
   }
@@ -91,10 +91,10 @@ export const addBeneficiary: RequestHandler = async (req: IRequest, res, next) =
       email,
     },
   });
-
-  // if beneficiary user not found
   if (!isUser) {
-    return res.status(400).json({ status: 'error', message: 'Intended beneficiary is not registered user', code: 400 });
+    return res
+      .status(400)
+      .json({ status: 'error', message: 'Intended beneficiary is not a registered user', code: 400 });
   }
 
   try {
@@ -127,7 +127,7 @@ export const addBeneficiary: RequestHandler = async (req: IRequest, res, next) =
 };
 
 /**
- * @route GET /api/v1/users/transfer
+ * @route POST /api/v1/users/transfer
  * @desc - transfer money
  * @acces Private
  */
@@ -156,20 +156,20 @@ export const sendMoney: RequestHandler = async (req: IRequest, res) => {
 
   const userBeneficiaries = user?.beneficiaries;
 
-  // if email was passed == user wants to fund another user
+  // if email is passed & its not the email of logged in user:: user is trnasfering money to beneficiary
   if (email && email !== userEmail) {
     const isBeneficiary = userBeneficiaries?.some((beneficiary) => beneficiary.email === email);
 
     // if user not a beneficiary
     if (!isBeneficiary) {
-      return res.status(400).json({ status: 'error', message: 'Can only fund your beneficiaries', code: 400 });
+      return res.status(400).json({ status: 'error', message: 'Can only make transfers to beneficiaries', code: 400 });
     }
     const data = await initializePayment({ email, amount: amount * 100 });
 
     res.json({ status: 'success', message: 'Payment initialised successfully', data });
   } else {
-    // when email is not passed == user is funding his/her account
-    const data = await initializePayment({ email: user.email, amount: amount * 100 });
+    // when email is not passed:: user is funding his/her self
+    const data = await initializePayment({ email: userEmail, amount: amount * 100 });
 
     res.json({ status: 'success', message: 'Payment initialised successfully', data });
   }
@@ -184,7 +184,6 @@ export const webHookVerifyPayment: RequestHandler = async (req, res) => {
 
   const email = data?.customer?.email;
   if (data?.status === 'success') {
-    // get user
     const user = await prisma.user.findUnique({
       where: {
         email,

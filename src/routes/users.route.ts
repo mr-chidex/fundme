@@ -10,6 +10,5 @@ router.route('/profile').get(authUser, getProfile);
 router.route('/beneficiary').patch(authUser, addBeneficiary);
 router.route('/transfer').post(authUser, sendMoney);
 router.route('/web-hook').post(webHookVerifyPayment);
-// router.route('/verify-pay').get(verifyPayment);
 
 export default router;
