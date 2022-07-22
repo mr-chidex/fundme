@@ -57,7 +57,7 @@ yarn dev
 
 ## Show your support
 
-Give a ⭐️ if you like this project!
+Don't forget to give a ⭐️ if you like this project!
 
 ## Copyright
 
