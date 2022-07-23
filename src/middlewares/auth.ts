@@ -16,7 +16,7 @@ export const authUser: RequestHandler = async (req: Request | any, res, next) =>
     });
   }
 
-  const token = authorization.replace('Bearer ', '');
+  const token = authorization.split(' ')[1];
 
   if (!token) {
     return res.status(401).json({
@@ -38,8 +38,6 @@ export const authUser: RequestHandler = async (req: Request | any, res, next) =>
     if (!user) {
       res.status(403).json({ status: 'error', message: 'Forbidden access', code: 403 });
     }
-
-    console.log(user);
 
     req.user = user;
 

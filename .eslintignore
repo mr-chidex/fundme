@@ -3,3 +3,4 @@
 /coverage
 /prisma
 *d.ts
+jest.config.*
