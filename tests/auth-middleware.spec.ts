@@ -7,7 +7,7 @@ describe('Auth User Middleware', () => {
     server.close();
   });
 
-  it('should return a code of 401 if token is not provided', async () => {
+  it('should return a 401 code with token format error if token is not provided', async () => {
     const res = await request(server).get('/api/v1/users/profile').set('Authorization', '');
 
     expect(res.statusCode).toBe(401);
