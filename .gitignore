@@ -4,3 +4,4 @@
 .env
 error.log
 combined.log
+tests/mocks

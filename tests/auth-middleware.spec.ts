@@ -27,4 +27,11 @@ describe('Auth User Middleware', () => {
     expect(res.body.message).toContain('not found');
     expect(res.statusCode).toBe(401);
   });
+
+  it('should return a 403 error code with invalid jwt', async () => {
+    const res = await request(server).get('/api/v1/users/profile').set('Authorization', `Bearer token`);
+
+    expect(res.body.message).toContain('jwt');
+    expect(res.statusCode).toBe(403);
+  });
 });

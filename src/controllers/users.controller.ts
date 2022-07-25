@@ -46,7 +46,7 @@ export const signup: RequestHandler = async (req, res) => {
  * @acces Private
  */
 export const getProfile: RequestHandler = async (req: IRequest, res) => {
-  const userId = req?.user?.id;
+  const userId = req?.userId;
 
   const user = await prisma.user.findUnique({
     where: {
@@ -71,8 +71,20 @@ export const getProfile: RequestHandler = async (req: IRequest, res) => {
  * @acces Private
  */
 export const addBeneficiary: RequestHandler = async (req: IRequest, res, next) => {
-  const userId = req?.user?.id;
-  const userEmail = req?.user?.email;
+  const userId = req?.userId;
+
+  const user = await prisma.user.findUnique({
+    where: {
+      id: userId,
+    },
+    select: { email: true },
+  });
+
+  if (!user) {
+    return res.status(403).json({ status: 'error', message: 'Forbidden access', code: 403 });
+  }
+
+  const userEmail = user?.email;
 
   // validate request body
   const { error, value } = validateBeneficiary(req.body as Beneficiary);
@@ -132,8 +144,7 @@ export const addBeneficiary: RequestHandler = async (req: IRequest, res, next) =
  * @acces Private
  */
 export const sendMoney: RequestHandler = async (req: IRequest, res) => {
-  const userId = req?.user?.id;
-  const userEmail = req?.user?.email;
+  const userId = req?.userId;
 
   // validate request body
   const { error, value } = validatePayData(req.body);
@@ -155,6 +166,7 @@ export const sendMoney: RequestHandler = async (req: IRequest, res) => {
   if (!user) return res.status(400).json({ status: 'error', message: 'Not a valid account', code: 400 });
 
   const userBeneficiaries = user?.beneficiaries;
+  const userEmail = user?.email;
 
   // if email is passed & its not the email of logged in user:: user is trnasfering money to beneficiary
   if (email && email !== userEmail) {
