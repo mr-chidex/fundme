@@ -1,15 +1,19 @@
 import request from 'supertest';
+import { Server } from 'http';
 
-import server from '../src/index';
+import app from '../src/app';
 import mockUser from './mocks/user.mock';
 import prisma from '../src/prisma/prisma';
 import { getToken } from '../src/utils/auth.util';
+import { User } from '../src/libs/types';
 
 describe('Auth User Middleware', () => {
   let token: string;
-  let user: any;
+  let user: User;
+  let server: Server;
 
   beforeAll(async () => {
+    server = app.listen(4000);
     user = await prisma.user.create({
       data: {
         email: mockUser.email,
@@ -22,7 +26,7 @@ describe('Auth User Middleware', () => {
 
   afterAll(async () => {
     await prisma.user.delete({ where: { email: mockUser.email } });
-
+    prisma.$disconnect();
     server.close();
   });
 
