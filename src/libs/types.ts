@@ -13,8 +13,6 @@ export interface PayData {
 
 export interface DecodedToken {
   id: number;
-  email: String;
-  name: String;
 }
 
 export interface Err extends Error {

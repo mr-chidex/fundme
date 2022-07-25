@@ -1,9 +1,28 @@
 import request from 'supertest';
 
 import server from '../src/index';
+import mockUser from './mocks/user.mock';
+import prisma from '../src/prisma/prisma';
+import { getToken } from '../src/utils/auth.util';
 
 describe('Auth User Middleware', () => {
-  afterAll(() => {
+  let token: string;
+  let user: any;
+
+  beforeAll(async () => {
+    user = await prisma.user.create({
+      data: {
+        email: mockUser.email,
+        password: mockUser.password,
+        name: mockUser.name,
+      },
+    });
+    token = getToken(user);
+  });
+
+  afterAll(async () => {
+    await prisma.user.delete({ where: { email: mockUser.email } });
+
     server.close();
   });
 
@@ -33,5 +52,11 @@ describe('Auth User Middleware', () => {
 
     expect(res.body.message).toContain('jwt');
     expect(res.statusCode).toBe(403);
+  });
+
+  it('should return a 200 code after successfully decoding valid token and getting profile', async () => {
+    const res = await request(server).get('/api/v1/users/profile').set('Authorization', `Bearer ${token}`);
+
+    expect(res.statusCode).toBe(200);
   });
 });
