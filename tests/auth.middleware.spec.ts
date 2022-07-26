@@ -12,8 +12,8 @@ describe('Auth User Middleware', () => {
   let user: User;
   let server: Server;
 
-  beforeAll(async () => {
-    server = app.listen(4000);
+  beforeEach(async () => {
+    server = await app.listen(4000);
     user = await prisma.user.create({
       data: {
         email: mockUser.email,
@@ -24,7 +24,7 @@ describe('Auth User Middleware', () => {
     token = getToken(user);
   });
 
-  afterAll(async () => {
+  afterEach(async () => {
     await prisma.user.delete({ where: { email: mockUser.email } });
     prisma.$disconnect();
     server.close();
