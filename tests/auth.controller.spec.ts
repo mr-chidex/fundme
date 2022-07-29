@@ -7,28 +7,29 @@ import prisma from '../src/prisma/prisma';
 import { User } from '../src/libs/types';
 
 describe('Auth - User login', () => {
-  let user: User;
   let server: Server;
+  let user: User;
 
   beforeEach(async () => {
-    server = await app.listen(4000);
-    user = await prisma.user.create({
-      data: {
-        email: mockUser.email,
-        password: mockUser.password,
-        name: mockUser.name,
-      },
-    });
+    // server = app.listen(4000);
+    // user = await prisma.user.create({
+    //   data: {
+    //     email: mockUser.email,
+    //     password: mockUser.password,
+    //     name: mockUser.name,
+    //   },
+    // });
   });
 
   afterEach(async () => {
-    await prisma.user.delete({ where: { email: mockUser.email } });
+    // await prisma.user.delete({ where: { email: mockUser.emai/l } });
+
     prisma.$disconnect();
-    server.close();
+    // server.close();
   });
 
   it('should return error on using invalid email type', async () => {
-    const response = await request(server).post('/api/v1/auth').send({
+    const response = await request(app).post('/api/v1/auth').send({
       email: 'email',
       password: 'password',
     });
@@ -36,7 +37,7 @@ describe('Auth - User login', () => {
   });
 
   it('should return error on using wrong password', async () => {
-    const response = await request(server).post('/api/v1/auth').send({
+    const response = await request(app).post('/api/v1/auth').send({
       email: mockUser.email,
       password: '!password',
     });
@@ -46,7 +47,7 @@ describe('Auth - User login', () => {
   });
 
   it('should return error on using wrong email', async () => {
-    const response = await request(server).post('/api/v1/auth').send({
+    const response = await request(app).post('/api/v1/auth').send({
       email: 'test@email.com',
       password: 'password',
     });
@@ -56,10 +57,13 @@ describe('Auth - User login', () => {
   });
 
   it('should return user token on successful sign in', async () => {
-    const response = await request(server).post('/api/v1/auth').send({
+    const response = await request(app).post('/api/v1/auth').send({
       email: mockUser.email,
       password: 'password',
     });
+
+    global.token = response.body.data.token;
+    process.env.SETUP = response.body.data.token;
 
     expect(response.statusCode).toBe(200);
     expect(response.body.status).toBe('success');

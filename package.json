@@ -9,11 +9,13 @@
     "build": "tsc -p .",
     "build:watch": "tsc --watch",
     "clean": "rm -rf dist",
-    "test": "jest --detectOpenHandles --verbose",
-    "test:watch": "jest --watchAll --detectOpenHandles",
+    "test": "dotenv -e .env.test jest -i --detectOpenHandles --forceExit --verbose",
+    "test:watch": "jest --watchAll  --forceExit --detectOpenHandles",
     "lint": "eslint src/**/*.ts",
     "lint:format": "eslint src/**/*.ts --fix",
-    "serve": "yarn ngrok http 8080"
+    "serve": "yarn ngrok http 8080",
+    "prisma:migrate": "npx prisma migrate dev --name",
+    "prisma:migrate:test": "dotenv -e .env.test -- npx prisma migrate dev --name testdb"
   },
   "keywords": [],
   "author": "",

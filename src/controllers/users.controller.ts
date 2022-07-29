@@ -80,10 +80,6 @@ export const addBeneficiary: RequestHandler = async (req: IRequest, res, next) =
     select: { email: true },
   });
 
-  if (!user) {
-    return res.status(403).json({ status: 'error', message: 'Forbidden access', code: 403 });
-  }
-
   const userEmail = user?.email;
 
   // validate request body
