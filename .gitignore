@@ -6,3 +6,5 @@
 error.log
 combined.log
 token.mock.ts
+/tests/auth.middleware.ts
+/tests/users.controller.ts

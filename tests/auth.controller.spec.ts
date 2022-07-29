@@ -1,5 +1,4 @@
 import request from 'supertest';
-import { Server } from 'http';
 
 import app from '../src/app';
 import mockUser from './mocks/user.mock';
@@ -7,25 +6,22 @@ import prisma from '../src/prisma/prisma';
 import { User } from '../src/libs/types';
 
 describe('Auth - User login', () => {
-  let server: Server;
   let user: User;
 
-  beforeEach(async () => {
-    // server = app.listen(4000);
-    // user = await prisma.user.create({
-    //   data: {
-    //     email: mockUser.email,
-    //     password: mockUser.password,
-    //     name: mockUser.name,
-    //   },
-    // });
+  beforeAll(async () => {
+    user = await prisma.user.create({
+      data: {
+        email: mockUser.email,
+        password: mockUser.password,
+        name: mockUser.name,
+      },
+    });
   });
 
-  afterEach(async () => {
-    // await prisma.user.delete({ where: { email: mockUser.emai/l } });
+  afterAll(async () => {
+    await prisma.user.deleteMany();
 
     prisma.$disconnect();
-    // server.close();
   });
 
   it('should return error on using invalid email type', async () => {
@@ -62,8 +58,7 @@ describe('Auth - User login', () => {
       password: 'password',
     });
 
-    global.token = response.body.data.token;
-    process.env.SETUP = response.body.data.token;
+    process.env.TEST_ACCESS_TOKEN = response.body.data.token;
 
     expect(response.statusCode).toBe(200);
     expect(response.body.status).toBe('success');
