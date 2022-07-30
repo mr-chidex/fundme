@@ -34,7 +34,7 @@ describe('Auth - User login', () => {
 
   it('should return error on using wrong password', async () => {
     const response = await request(app).post('/api/v1/auth').send({
-      email: mockUser.email,
+      email: user.email,
       password: '!password',
     });
 
@@ -54,11 +54,9 @@ describe('Auth - User login', () => {
 
   it('should return user token on successful sign in', async () => {
     const response = await request(app).post('/api/v1/auth').send({
-      email: mockUser.email,
+      email: user.email,
       password: 'password',
     });
-
-    process.env.TEST_ACCESS_TOKEN = response.body.data.token;
 
     expect(response.statusCode).toBe(200);
     expect(response.body.status).toBe('success');
