@@ -9,6 +9,12 @@ describe('Auth - User login', () => {
   let user: User;
 
   beforeAll(async () => {
+    await prisma.user.deleteMany();
+  });
+
+  beforeEach(async () => {
+    await prisma.user.deleteMany();
+    // creating user for testing
     user = await prisma.user.create({
       data: {
         email: mockUser.email,
@@ -18,7 +24,8 @@ describe('Auth - User login', () => {
     });
   });
 
-  afterAll(async () => {
+  afterEach(async () => {
+    // deleting created user
     await prisma.user.deleteMany();
 
     prisma.$disconnect();
@@ -54,7 +61,7 @@ describe('Auth - User login', () => {
 
   it('should return user token on successful sign in', async () => {
     const response = await request(app).post('/api/v1/auth').send({
-      email: user.email,
+      email: mockUser.email,
       password: 'password',
     });
 

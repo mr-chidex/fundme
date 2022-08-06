@@ -26,6 +26,7 @@ export const signup: RequestHandler = async (req, res) => {
       email,
     },
   });
+
   if (userExist) return res.status(400).json({ status: 'error', message: 'Email already in use', code: 400 });
 
   // if user email is new
@@ -236,7 +237,7 @@ export const getUsers: RequestHandler = async (req, res) => {
 /*
 // callback verification function
 export const verifyPayment: RequestHandler = async (req, res) => {
-  const trxref = req.query.trxref as string;
+  const {trxref} = req.query as string;
 
   if (!trxref) {
     return res.status(400).json({

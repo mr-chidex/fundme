@@ -8,6 +8,7 @@ describe('Auth User Middleware', () => {
   let token: string;
 
   beforeAll(() => {
+    //getting token for testing
     token = getToken({
       id: 123,
       email: mockUser.email,
@@ -47,7 +48,6 @@ describe('Auth User Middleware', () => {
   it('should return a 200 code after successfully decoding valid token and getting profile', async () => {
     const res = await request(app).get('/api/v1/users/profile').set('Authorization', `Bearer ${token}`);
 
-    console.log(res.body);
     expect(res.statusCode).toBe(200);
   });
 });

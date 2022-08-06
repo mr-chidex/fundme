@@ -6,7 +6,7 @@
   "scripts": {
     "start": "yarn build && node ./dist/index.js",
     "dev": "yarn clean && nodemon ./src/index.ts",
-    "build": "tsc -p .",
+    "build": "tsc -p . && prisma generate",
     "build:watch": "tsc --watch",
     "clean": "rm -rf dist",
     "test": "dotenv -e .env.test jest -i --detectOpenHandles --forceExit --verbose",
