@@ -188,8 +188,6 @@ export const sendMoney: RequestHandler = async (req: IRequest, res) => {
 // Verify payment with paystack webhook
 // route should not be publicly available
 export const webHookVerifyPayment: RequestHandler = async (req, res) => {
-  res.sendStatus(200);
-
   const { data } = req.body;
 
   const email = data?.customer?.email;
@@ -214,9 +212,9 @@ export const webHookVerifyPayment: RequestHandler = async (req, res) => {
         },
       });
     }
+    
+     res.sendStatus(200);
   }
-
-  console.log('done:::>>>');
   logger.log('info', 'WebHook verification');
 };
 
